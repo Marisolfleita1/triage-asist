@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TriageAsist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="screen-login" class="screen active">
+    <div class="login-bg">
+      <div class="login-circle login-circle--tl"></div>
+      <div class="login-circle login-circle--br"></div>
+      <div class="login-card">
+        <div class="login-card__header">
+          <div class="logo-wrap">
+            <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
+              <rect width="40" height="40" rx="10" fill="#0d9488"/>
+              <rect x="17" y="9" width="6" height="22" rx="2" fill="white"/>
+              <rect x="9" y="17" width="22" height="6" rx="2" fill="white"/>
+              <path d="M6 30 Q10 30 12 28 L14 32 L17 24 L20 34 L23 27 L26 31 L28 29 L34 29"
+                stroke="white" stroke-width="1.5" stroke-opacity="0.45"
+                stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <h1 class="login-card__title">Asistencia a la Categorización del Triage</h1>
+          <p class="login-card__subtitle">Solo personal autorizado</p>
+        </div>
+        <div class="login-card__wave">
+          <svg viewBox="0 0 360 20" fill="white" preserveAspectRatio="none">
+            <path d="M0 20 Q90 0 180 10 Q270 20 360 0 L360 20 Z"/>
+          </svg>
+        </div>
+        <div class="login-card__body">
+          <form id="login-form" autocomplete="off">
+            <div class="field">
+              <label class="field__label">Usuario</label>
+              <input id="login-user" type="text" class="field__input" />
+            </div>
+            <div class="field">
+              <label class="field__label">Contraseña</label>
+              <div class="field__pass-wrap">
+                <input id="login-pass" type="password" class="field__input" placeholder="••••••••"/>
+                <button type="button" id="toggle-pass" class="field__eye">
+                  <svg id="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg id="eye-hide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <div id="login-error" class="alert alert--error" style="display:none">
+              Credenciales incorrectas. Intente nuevamente.
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Ingresar</button>
+          </form>
+          <div class="demo-hint">Demo — <strong>admin</strong> / <strong>1234</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INGRESO -->
+  <div id="screen-ingreso" class="screen">
+    <div class="topbar">
+      <div class="topbar__brand">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="10" fill="#0d9488"/>
+          <rect x="17" y="9" width="6" height="22" rx="2" fill="white"/>
+          <rect x="9" y="17" width="22" height="6" rx="2" fill="white"/>
+        </svg>
+        <span>TriageAsist</span>
+      </div>
+      <div class="topbar__right">
+        <div class="topbar__user"><span class="dot"></span><span id="topbar-user-ingreso">Usuario</span></div>
+        <button id="btn-logout-ingreso" class="btn btn--logout">Cerrar sesión</button>
+      </div>
+    </div>
+    <div class="breadcrumb">Triaje › <strong>Ingreso de paciente</strong></div>
+    <div class="page-content">
+      <h1 class="page-title">Ingreso de paciente</h1>
+      <div class="two-col">
+        <!-- Columna izquierda -->
+        <div class="col">
+          <div class="card">
+            <label class="card__label">DNI del Paciente</label>
+            <div class="search-row">
+              <input id="dni-input" type="text" class="field__input" value="28 904 771"/>
+              <button id="btn-buscar" class="btn btn--primary btn--sm">Buscar</button>
+            </div>
+          </div>
+
+          <div id="state-found" class="card">
+            <p class="card__label">Antecedentes (desde historial)</p>
+            <div class="patient-name">García, María Elena <span class="patient-age">— 67 años</span></div>
+            <div class="tag-list">
+              <span class="tag tag--blue">HTA</span> <!-- TODO: Reemplazar estos antecedentes escritos a mano por datos dinámicos de la base-->
+              <span class="tag tag--purple">Diabetes tipo 2</span>
+              <span class="tag tag--orange">Cardiopatía isquémica</span>
+              <span class="tag tag--red">Alergia: Penicilina</span>
+              <span class="tag tag--gray">Metformina</span>
+              <span class="tag tag--gray">Enalapril</span>
+              <span class="tag tag--gray">AAS</span>
+            </div>
+          </div>
+
+          <div id="state-not-found" class="card" style="display:none">
+            <div class="alert alert--warning">
+              <strong>Paciente no encontrado</strong><br/> <!-- Mejorar el diseño visual de esta alerta -->
+              Los datos quedarán <strong>pendientes de confirmación</strong> por un profesional habilitado.
+            </div>
+            <p class="card__label" style="margin-top:14px">Cargar antecedentes manualmente</p>
+            <div class="field"><label class="field__label">Alergias conocidas</label><input type="text" class="field__input" placeholder="Ej: Penicilina, Ibuprofeno..."/></div>
+            <div class="field"><label class="field__label">Medicación actual</label><input type="text" class="field__input" placeholder="Ej: Metformina, Enalapril..."/></div>
+            <div class="field"><label class="field__label">Enfermedades preexistentes</label><input type="text" class="field__input" placeholder="Ej: HTA, Diabetes tipo 2..."/></div>
+            <div class="alert alert--warning alert--sm">⏱ Pendiente de confirmación profesional</div>
+          </div>
+
+          <div id="state-idle" class="card card--dashed" style="display:none">
+            <p class="idle-text">Busque un paciente por DNI para ver sus antecedentes</p>
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="col">
+          <div class="card">
+            <label class="card__label">Síntomas referidos por el Paciente</label>
+            <textarea id="sintomas" class="field__textarea" rows="4">Dolor fuerte en el pecho, dice que le cuesta respirar y siente el brazo izquierdo adormecido desde hace 20 minutos</textarea>
+          </div>
+          <div class="card">
+            <label class="card__label">Intensidad Percibida</label>
+            <div class="btn-group" id="intensity-group">
+              <button class="toggle-btn" data-val="leve">Leve</button>
+              <button class="toggle-btn" data-val="moderada">Moderada</button>
+              <button class="toggle-btn active" data-val="severa">Severa</button>
+            </div>
+          </div>
+          <div class="card">
+            <label class="card__label">Tiempo de Inicio de Síntomas</label>
+            <div class="btn-group" id="time-group">
+              <button class="toggle-btn active" data-val="minutos">Minutos</button>
+              <button class="toggle-btn" data-val="horas">Horas</button>
+              <button class="toggle-btn" data-val="dias">Días</button>
+            </div>
+          </div>
+          <button id="btn-clasificar" class="btn btn--primary btn--full">Clasificar paciente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLASIFICACIÓN -->
+  <div id="screen-clasificacion" class="screen">
+    <div class="topbar">
+      <div class="topbar__brand">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <rect width="40" height="40" rx="10" fill="#0d9488"/>
+          <rect x="17" y="9" width="6" height="22" rx="2" fill="white"/>
+          <rect x="9" y="17" width="22" height="6" rx="2" fill="white"/>
+        </svg>
+        <span>TriageAsist</span>
+      </div>
+      <div class="topbar__right">
+        <div class="topbar__user"><span class="dot"></span><span id="topbar-user-clasificacion">Usuario</span></div>
+        <button id="btn-logout-clasificacion" class="btn btn--logout">Cerrar sesión</button>
+      </div>
+    </div>
+    <div class="breadcrumb">Triaje › Ingreso › <strong>Clasificación asignada</strong></div>
+    <div class="page-content">
+      <h1 class="page-title">Clasificación asignada</h1>
+      <div class="two-col">
+        <div class="col">
+          <div id="clasificacion-card" class="card card--rojo">
+            <p class="card__label card__label--red">Clasificación</p>
+            <p id="clasificacion-titulo" class="rojo-title">ROJO — Crítico</p>
+            <p id="clasificacion-sub" class="rojo-sub">Atención inmediata. No puede esperar.</p>
+          </div>
+          <div class="card card--row">
+            <div>
+              <p class="card__label">Tiempo de espera estimado</p>
+              <p id="espera-num" class="wait-num">0 min</p>
+              <p id="espera-sub" class="wait-sub">Ingreso inmediato — área de emergencias</p>
+            </div>
+            <div class="wait-badge">!</div>
+          </div>
+          <div class="card">
+            <p class="card__label">Síntomas detectados</p>
+            <ul id="sintomas-detectados-list" class="symptom-list">
+              <li>Dolor torácico intenso</li>
+              <li>Disnea</li>
+              <li>Parestesia en brazo izquierdo</li>
+              <li>Inicio agudo (&lt;30 min)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <p class="card__label">Factores agravantes (desde historial)</p>
+            <div id="factores-agravantes-list" class="tag-list">
+              <span class="tag tag--orange-outline">Cardiopatía isquémica</span>
+              <span class="tag tag--orange-outline">HTA</span>
+              <span class="tag tag--orange-outline">Diabetes tipo 2</span>
+              <span class="tag tag--orange-outline">Edad: 67 años</span>
+            </div>
+          </div>
+          <div class="card">
+            <p class="card__label">Justificación del modelo</p>
+            <p id="justificacion-text" class="justif-text">Cuadro compatible con síndrome coronario agudo. Los antecedentes cardiovasculares aumentan significativamente el riesgo de evento mayor.</p>
+          </div>
+          <div class="action-row">
+            <button id="btn-editar" class="btn btn--outline">Editar datos</button>
+            <button id="btn-enviar" class="btn btn--primary">Enviar a Triage</button>
+          </div>
+          <div id="sent-banner" class="alert alert--success" style="display:none">
+            ✓ <strong>Paciente enviado al área de triage.</strong> Volviendo al formulario...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

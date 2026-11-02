@@ -111,10 +111,21 @@
               <strong>Paciente no encontrado</strong><br/> <!-- Mejorar el diseño visual de esta alerta -->
               Los datos quedarán <strong>pendientes de confirmación</strong> por un profesional habilitado.
             </div>
-            <p class="card__label" style="margin-top:14px">Cargar antecedentes manualmente</p>
-            <div class="field"><label class="field__label">Alergias conocidas</label><input type="text" class="field__input" placeholder="Ej: Penicilina, Ibuprofeno..."/></div>
-            <div class="field"><label class="field__label">Medicación actual</label><input type="text" class="field__input" placeholder="Ej: Metformina, Enalapril..."/></div>
-            <div class="field"><label class="field__label">Enfermedades preexistentes</label><input type="text" class="field__input" placeholder="Ej: HTA, Diabetes tipo 2..."/></div>
+            <p class="card__label" style="margin-top:14px">Datos del paciente</p>
+            <div class="vitals-grid">
+              <div class="field"><label class="field__label">Edad</label><input id="manual-edad" type="number" min="0" max="120" class="field__input" placeholder="años"/></div>
+              <div class="field"><label class="field__label">Sexo</label>
+                <select id="manual-sexo" class="field__input">
+                  <option value="">No registrado</option>
+                  <option value="F">Femenino</option>
+                  <option value="M">Masculino</option>
+                </select>
+              </div>
+            </div>
+            <p class="card__label">Cargar antecedentes manualmente</p>
+            <div class="field"><label class="field__label">Alergias conocidas</label><input id="manual-alergias" type="text" class="field__input" placeholder="Ej: Penicilina, Ibuprofeno..."/></div>
+            <div class="field"><label class="field__label">Medicación actual</label><input id="manual-medicacion" type="text" class="field__input" placeholder="Ej: Metformina, Enalapril..."/></div>
+            <div class="field"><label class="field__label">Enfermedades preexistentes</label><input id="manual-enfermedades" type="text" class="field__input" placeholder="Ej: HTA, Diabetes tipo 2..."/></div>
             <div class="alert alert--warning alert--sm">⏱ Pendiente de confirmación profesional</div>
           </div>
 
@@ -130,12 +141,26 @@
             <textarea id="sintomas" class="field__textarea" rows="4">Dolor fuerte en el pecho, dice que le cuesta respirar y siente el brazo izquierdo adormecido desde hace 20 minutos</textarea>
           </div>
           <div class="card">
-            <label class="card__label">Intensidad Percibida</label>
-            <div class="btn-group" id="intensity-group">
-              <button class="toggle-btn" data-val="leve">Leve</button>
-              <button class="toggle-btn" data-val="moderada">Moderada</button>
-              <button class="toggle-btn active" data-val="severa">Severa</button>
+            <label class="card__label">Signos vitales (opcionales — dejá vacío lo que no se midió)</label>
+            <div class="vitals-grid">
+              <div class="field"><label class="field__label">TA sistólica (mmHg)</label><input id="sv-tas" type="number" class="field__input" placeholder="120"/></div>
+              <div class="field"><label class="field__label">TA diastólica (mmHg)</label><input id="sv-tad" type="number" class="field__input" placeholder="80"/></div>
+              <div class="field"><label class="field__label">Frec. cardíaca (lpm)</label><input id="sv-fc" type="number" class="field__input" placeholder="80"/></div>
+              <div class="field"><label class="field__label">Frec. respiratoria (rpm)</label><input id="sv-fr" type="number" class="field__input" placeholder="16"/></div>
+              <div class="field"><label class="field__label">Temperatura (°C)</label><input id="sv-temperatura" type="number" step="0.1" class="field__input" placeholder="36.5"/></div>
+              <div class="field"><label class="field__label">Saturación O2 (%)</label><input id="sv-saturacion" type="number" class="field__input" placeholder="98"/></div>
+              <div class="field"><label class="field__label">Dolor (0 a 10)</label><input id="sv-dolor" type="number" min="0" max="10" class="field__input" placeholder="0-10"/></div>
+              <div class="field"><label class="field__label">Estado mental</label>
+                <select id="sv-estado-mental" class="field__input">
+                  <option value="">No registrado</option>
+                  <option value="alerta">Alerta</option>
+                  <option value="responde a la voz">Responde a la voz</option>
+                  <option value="responde al dolor">Responde al dolor</option>
+                  <option value="no responde">No responde</option>
+                </select>
+              </div>
             </div>
+            <label class="check-row"><input id="sv-trauma" type="checkbox"/> Consulta por trauma / lesión</label>
           </div>
           <div class="card">
             <label class="card__label">Tiempo de Inicio de Síntomas</label>
@@ -186,28 +211,19 @@
             <div class="wait-badge">!</div>
           </div>
           <div class="card">
-            <p class="card__label">Síntomas detectados</p>
-            <ul id="sintomas-detectados-list" class="symptom-list">
-              <li>Dolor torácico intenso</li>
-              <li>Disnea</li>
-              <li>Parestesia en brazo izquierdo</li>
-              <li>Inicio agudo (&lt;30 min)</li>
-            </ul>
+            <p class="card__label">Signos de alarma</p>
+            <ul id="signos-alarma-list" class="symptom-list"></ul>
           </div>
         </div>
         <div class="col">
           <div class="card">
-            <p class="card__label">Factores agravantes (desde historial)</p>
-            <div id="factores-agravantes-list" class="tag-list">
-              <span class="tag tag--orange-outline">Cardiopatía isquémica</span>
-              <span class="tag tag--orange-outline">HTA</span>
-              <span class="tag tag--orange-outline">Diabetes tipo 2</span>
-              <span class="tag tag--orange-outline">Edad: 67 años</span>
-            </div>
-          </div>
-          <div class="card">
             <p class="card__label">Justificación del modelo</p>
-            <p id="justificacion-text" class="justif-text">Cuadro compatible con síndrome coronario agudo. Los antecedentes cardiovasculares aumentan significativamente el riesgo de evento mayor.</p>
+            <p id="justificacion-text" class="justif-text"></p>
+            <p id="fuente-text" class="fuente-text" style="display:none">Basado en ejemplos del protocolo CTAS</p>
+          </div>
+          <div class="alert alert--warning">
+            ⚠ Esta clasificación es una <strong>sugerencia de apoyo para el profesional de salud</strong>,
+            no un diagnóstico. La decisión final la toma el personal de triage.
           </div>
           <div class="action-row">
             <button id="btn-editar" class="btn btn--outline">Editar datos</button>

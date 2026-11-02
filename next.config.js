@@ -1,40 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // Se mantiene: actions.ts (processDocs, chat, resetChatEngine) sigue
-    // usando 'use server', asi quue este flag tiene que seguir prendido.
-    serverActions: true,
+    // El cliente de Chroma se carga desde node_modules en vez de pasar por webpack
+    serverComponentsExternalPackages: ["chromadb"],
   },
-  // Se quitó `output: 'export'`.
-  // Ese modo genera un sitio  estático (sin servidor Node corriendo),
-  // yy tamto las Serverr Actions como nuestras API Routes nuevas (/api/pacientes/...)
-  // necesitan un seervidor (`next dev` / `next start`) para ejecutarse.
-  webpack: (config, { isServer }) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      "sharp$": false,
-      "onnxruntime-node$": false,
-    }
-    config.experiments = {
-      ...config.experiments,
-      topLevelAwait: true,
-      asyncWebAssembly: true,
-    };
-    config.module.rules.push({
-      test: /\.md$/i,
-      use: "raw-loader",
-    });
-    if (!isServer) {
-      config.resolve.fallback = {
-        fs: false,
-        "node:fs/promises": false,
-        assert: false,
-        module: false,
-        perf_hooks: false,
-      };
-    }
-    return config;
-  },
+  // No se usa `output: 'export'`: ese modo genera un sitio estático y las API Routes
+  // (/api/pacientes, /api/clasificar) necesitan un servidor (`next dev` / `next start`).
 }
 
 module.exports = nextConfig

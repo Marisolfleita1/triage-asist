@@ -192,11 +192,7 @@ body { font-family: 'Inter', sans-serif; background: #f9fafb; color: #111827; fo
 .symptom-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #374151; }
 .symptom-list li::before { content: ''; width: 6px; height: 6px; background: #fca5a5; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
 .justif-text { font-size: 13px; color: #374151; line-height: 1.6; margin-bottom: 14px; }
-.confidence-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.conf-label { font-size: 12px; color: #9ca3af; }
-.conf-val { font-size: 13px; font-weight: 700; color: #16a34a; }
-.progress-bar { background: #f3f4f6; border-radius: 999px; height: 8px; overflow: hidden; }
-.progress-bar__fill { background: #22c55e; height: 100%; border-radius: 999px; }
+.fuente-text { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 14px; }
 
 /* ── ACTIONS ── */
 .action-row { display: flex; gap: 12px; }
@@ -208,3 +204,6 @@ body { font-family: 'Inter', sans-serif; background: #f9fafb; color: #111827; fo
   .two-col { grid-template-columns: 1fr; }
   .page-content, .topbar, .breadcrumb { padding-left: 16px; padding-right: 16px; }
 }
+/* Signos vitales y datos manuales */
+.vitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.check-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; cursor: pointer; }

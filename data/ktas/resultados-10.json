@@ -1,0 +1,153 @@
+{
+  "metricas": {
+    "n": 10,
+    "accuracy": 0.5,
+    "f1Macro": 0.6142857142857143,
+    "kappaPonderado": 0.8251748251748252,
+    "subTriage": 0.3,
+    "sobreTriage": 0.2,
+    "matriz": [
+      [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        2,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  "detalle": [
+    {
+      "id": "ktas-105",
+      "motivo": "H-Headache",
+      "real": 3,
+      "voto": 3,
+      "nivel": 3,
+      "justificacion": "El paciente presenta dolor de cabeza de intensidad moderada (6/10) tras un trauma, pero sus signos vitales son estables y no hay otros hallazgos preocupantes.",
+      "signos_de_alarma": [],
+      "confianza": 0.8
+    },
+    {
+      "id": "ktas-1256",
+      "motivo": "general weakness",
+      "real": 3,
+      "voto": 3,
+      "nivel": 4,
+      "justificacion": "La paciente presenta debilidad general, pero sus signos vitales son normales y no hay dolor.  Su estado mental es alerta y su saturación de oxígeno es aceptable.",
+      "signos_de_alarma": [],
+      "confianza": 0.2
+    },
+    {
+      "id": "ktas-1009",
+      "motivo": "post-CPR state",
+      "real": 1,
+      "voto": 1,
+      "nivel": 1,
+      "justificacion": "El paciente se encuentra en estado post-CPR, lo que indica un riesgo vital inmediato. La falta de respuesta y la ausencia de datos vitales sugieren una situación crítica.",
+      "signos_de_alarma": [],
+      "confianza": 0.6
+    },
+    {
+      "id": "ktas-785",
+      "motivo": "distension, abd",
+      "real": 5,
+      "voto": 5,
+      "nivel": 5,
+      "justificacion": "La paciente presenta una distensión abdominal sin dolor y signos vitales dentro de rangos normales. La falta de datos como SatO2 no altera la clasificación.",
+      "signos_de_alarma": [],
+      "confianza": 0.76
+    },
+    {
+      "id": "ktas-209",
+      "motivo": "Ankle Injury",
+      "real": 5,
+      "voto": 4,
+      "nivel": 4,
+      "justificacion": "El paciente presenta un dolor leve, signos vitales dentro de rangos normales y no hay indicios de alarma. Se considera un caso menos urgente.",
+      "signos_de_alarma": [],
+      "confianza": 0.76
+    },
+    {
+      "id": "ktas-108",
+      "motivo": "rt flank pain",
+      "real": 3,
+      "voto": 4,
+      "nivel": 4,
+      "justificacion": "El paciente presenta dolor leve a moderado en el flanco derecho, signos vitales dentro de rangos normales y sin datos alarmantes. ",
+      "signos_de_alarma": [],
+      "confianza": 0.6
+    },
+    {
+      "id": "ktas-234",
+      "motivo": "PTx - Pneumothorax",
+      "real": 4,
+      "voto": 3,
+      "nivel": 3,
+      "justificacion": "El paciente presenta un posible neumotórax, que requiere evaluación rápida.  Sin embargo, sus signos vitales son estables y el dolor es leve.",
+      "signos_de_alarma": [
+        "SatO2 no registrado"
+      ],
+      "confianza": 0.57
+    },
+    {
+      "id": "ktas-352",
+      "motivo": "Left chest pain",
+      "real": 2,
+      "voto": 2,
+      "nivel": 2,
+      "justificacion": "El paciente presenta dolor torácico y una presión arterial elevada, lo que sugiere un posible problema cardiovascular que requiere evaluación rápida.",
+      "signos_de_alarma": [],
+      "confianza": 1
+    },
+    {
+      "id": "ktas-158",
+      "motivo": "Catheter removal",
+      "real": 4,
+      "voto": 5,
+      "nivel": 5,
+      "justificacion": "La paciente refiere extracción de catéter, procedimiento no asociado a riesgo vital inmediato. Sus signos vitales son estables.",
+      "signos_de_alarma": [],
+      "confianza": 0.38
+    },
+    {
+      "id": "ktas-973",
+      "motivo": "dizziness",
+      "real": 3,
+      "voto": 3,
+      "nivel": 3,
+      "justificacion": "El paciente presenta taquicardia leve y presión arterial elevada, pero se encuentra alerta y sin otros síntomas preocupantes.  ",
+      "signos_de_alarma": [
+        "SatO2 no registrado"
+      ],
+      "confianza": 0.76
+    }
+  ]
+}

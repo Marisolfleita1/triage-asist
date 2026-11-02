@@ -1,7 +1,4 @@
-import "./globals.css";
-import { Public_Sans } from "next/font/google";
-
-const publicSans = Public_Sans({ subsets: ["latin"] });
+export const metadata = { title: "TriageAsist" }
 
 export default function RootLayout({
   children,
@@ -9,13 +6,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <title>ArganoConnect Local PDF AI</title>
-      </head>
-      <body className={publicSans.className}>
-        <div className="flex flex-col p-4 md:p-12 h-[100vh]">{children}</div>
-      </body>
+    <html lang="es">
+      <body>{children}</body>
     </html>
   );
 }

@@ -36,5 +36,8 @@ next-env.d.ts
 
 .yarn
 
-# claude code local settings
-.claude/
+# base vectorial de Chroma (se genera con npm run rag:indexar)
+/data/chroma/
+# protocolo CTAS: tiene copyright, no se sube
+/data/pediatria/protocolo.pdf
+desktop.ini

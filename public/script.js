@@ -86,8 +86,13 @@ function resetIngreso() {
   document.getElementById('state-idle').style.display = '';
   pacienteActual = null;
 
+  // Limpiamos signos vitales y datos manuales
+  document.querySelectorAll('[id^="sv-"], [id^="manual-"]').forEach(el => {
+    if (el.type === 'checkbox') el.checked = false;
+    else el.value = '';
+  });
+
   // Reseteamos toggles
-  setActiveToggle('intensity-group', 'severa');
   setActiveToggle('time-group', 'minutos');
 }
 
@@ -150,46 +155,58 @@ document.getElementById('dni-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') document.getElementById('btn-buscar').click();
 });
 
-const COLOR_INFO = {
-  ROJO:     { clase: 'rojo',     label: 'Crítico',      esperaTexto: 'Ingreso inmediato — área de emergencias' },
-  NARANJA:  { clase: 'naranja',  label: 'Muy urgente',   esperaTexto: 'Atención prioritaria, monitoreo continuo' },
-  AMARILLO: { clase: 'amarillo', label: 'Urgente',       esperaTexto: 'Espera en sala con reevaluación periódica' },
-  VERDE:    { clase: 'verde',    label: 'Poco urgente',  esperaTexto: 'Espera en sala' },
-  AZUL:     { clase: 'azul',     label: 'No urgente',    esperaTexto: 'Puede derivarse a consultorio externo' },
+// Nivel KTAS (1 = más grave) -> color y tiempo máximo de espera
+const NIVEL_INFO = {
+  1: { clase: 'rojo',     color: 'ROJO',     label: 'Reanimación',   espera: '0 min',   esperaTexto: 'Ingreso inmediato — área de emergencias' },
+  2: { clase: 'naranja',  color: 'NARANJA',  label: 'Emergencia',    espera: '10 min',  esperaTexto: 'Atención prioritaria, monitoreo continuo' },
+  3: { clase: 'amarillo', color: 'AMARILLO', label: 'Urgente',       espera: '30 min',  esperaTexto: 'Espera en sala con reevaluación periódica' },
+  4: { clase: 'verde',    color: 'VERDE',    label: 'Menos urgente', espera: '60 min',  esperaTexto: 'Espera en sala' },
+  5: { clase: 'azul',     color: 'AZUL',     label: 'No urgente',    espera: '120 min', esperaTexto: 'Puede derivarse a consultorio externo' },
+};
+
+// En CTAS (menores de 16) cambian algunos nombres y la espera del nivel 2
+const NIVEL_INFO_CTAS = {
+  1: { label: 'Resucitación' },
+  2: { espera: '15 min' },
+  3: { label: 'Urgencia' },
 };
 
 function renderClasificacion(data) {
-  const info = COLOR_INFO[data.color] || COLOR_INFO.AMARILLO;
+  const esCtas = data.fuente === 'ctas';
+  const info = { ...(NIVEL_INFO[data.nivel] || NIVEL_INFO[3]), ...(esCtas ? NIVEL_INFO_CTAS[data.nivel] : {}) };
 
   const card = document.getElementById('clasificacion-card');
   card.className = 'card card--' + info.clase;
 
   const titulo = document.getElementById('clasificacion-titulo');
-  titulo.textContent = `${data.color} — ${info.label}`;
+  titulo.textContent = `${info.color} — ${info.label}`;
   titulo.className = 'rojo-title clasif-title--' + info.clase;
 
-  document.getElementById('clasificacion-sub').textContent = data.clasificacion;
-  document.getElementById('espera-num').textContent = `${data.tiempoEsperaMin} min`;
+  document.getElementById('clasificacion-sub').textContent = `Nivel ${esCtas ? 'CTAS' : 'KTAS'} ${data.nivel}`;
+  document.getElementById('espera-num').textContent = info.espera;
   document.getElementById('espera-sub').textContent = info.esperaTexto;
 
-  const sintomasList = document.getElementById('sintomas-detectados-list');
-  sintomasList.innerHTML = '';
-  (data.sintomasDetectados || []).forEach(s => {
+  const signosList = document.getElementById('signos-alarma-list');
+  signosList.innerHTML = '';
+  const signos = data.signos_de_alarma || [];
+  (signos.length ? signos : ['No se detectaron signos de alarma']).forEach(s => {
     const li = document.createElement('li');
     li.textContent = s;
-    sintomasList.appendChild(li);
-  });
-
-  const factoresList = document.getElementById('factores-agravantes-list');
-  factoresList.innerHTML = '';
-  (data.factoresAgravantes || []).forEach(f => {
-    const span = document.createElement('span');
-    span.className = 'tag tag--orange-outline';
-    span.textContent = f;
-    factoresList.appendChild(span);
+    signosList.appendChild(li);
   });
 
   document.getElementById('justificacion-text').textContent = data.justificacion || '';
+  document.getElementById('fuente-text').style.display = esCtas ? '' : 'none';
+}
+
+// Lee un input numérico; vacío -> null (el dato no se midió)
+function leerNumero(id) {
+  const valor = document.getElementById(id).value;
+  return valor === '' ? null : Number(valor);
+}
+
+function leerTexto(id) {
+  return document.getElementById(id).value.trim();
 }
 
 document.getElementById('btn-clasificar').addEventListener('click', async function() {
@@ -198,17 +215,37 @@ document.getElementById('btn-clasificar').addEventListener('click', async functi
   const sintomas = document.getElementById('sintomas').value.trim();
   if (!sintomas) { alert('Ingresá los síntomas del paciente.'); return; }
 
-  const intensidad = document.querySelector('#intensity-group .toggle-btn.active').dataset.val;
   const tiempoInicio = document.querySelector('#time-group .toggle-btn.active').dataset.val;
 
+  const signos = {
+    tas: leerNumero('sv-tas'),
+    tad: leerNumero('sv-tad'),
+    fc: leerNumero('sv-fc'),
+    fr: leerNumero('sv-fr'),
+    temperatura: leerNumero('sv-temperatura'),
+    saturacion: leerNumero('sv-saturacion'),
+    dolor: leerNumero('sv-dolor'),
+    estadoMental: leerTexto('sv-estado-mental') || null,
+    trauma: document.getElementById('sv-trauma').checked,
+  };
+
+  // Si el paciente no se encontró por DNI, se usan los datos cargados a mano
+  const manual = pacienteActual ? null : {
+    edad: leerNumero('manual-edad'),
+    sexo: leerTexto('manual-sexo') || null,
+    alergias: leerTexto('manual-alergias'),
+    medicacion: leerTexto('manual-medicacion'),
+    enfermedades: leerTexto('manual-enfermedades'),
+  };
+
   btn.disabled = true;
-  btn.textContent = 'Clasificando...';
+  btn.textContent = 'Clasificando... (puede tardar hasta 1 minuto)';
 
   try {
     const res = await fetch(`${API_BASE}/api/clasificar`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sintomas, intensidad, tiempoInicio, paciente: pacienteActual }),
+      body: JSON.stringify({ sintomas, tiempoInicio, paciente: pacienteActual, manual, signos }),
     });
     const clasificacion = await res.json();
     if (!res.ok) throw new Error(clasificacion.error || 'Error del servidor');
@@ -216,7 +253,7 @@ document.getElementById('btn-clasificar').addEventListener('click', async functi
     goTo('screen-clasificacion');
   } catch (err) {
     console.error('Error clasificando:', err);
-    alert('No se pudo clasificar al paciente. Verificá que Ollama esté corriendo y el modelo "triage-assistant" exista.');
+    alert('No se pudo clasificar al paciente.\n\n' + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = original;
@@ -231,11 +268,6 @@ function setActiveToggle(groupId, val) {
     btn.classList.toggle('active', btn.dataset.val === val);
   });
 }
-
-document.getElementById('intensity-group').addEventListener('click', function(e) {
-  const btn = e.target.closest('.toggle-btn');
-  if (btn) setActiveToggle('intensity-group', btn.dataset.val);
-});
 
 document.getElementById('time-group').addEventListener('click', function(e) {
   const btn = e.target.closest('.toggle-btn');
